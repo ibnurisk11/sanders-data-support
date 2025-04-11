@@ -5,6 +5,7 @@
     "codespaces": {
       "openFiles": [
         "README.md",
+        "main.py"
         "dashboard.py",
         "dashboard-payday.py"
       ]
@@ -27,9 +28,13 @@
       "onAutoForward": "openPreview"
     },
     "8502": {
+      "label": "Application Personal Dashboard",
+      "onAutoForward": "openPreview"
+    },
+    "8503": {
       "label": "Application Payday Dashboard",
       "onAutoForward": "openPreview"
     }
   },
-  "forwardPorts": [8501, 8502]
+  "forwardPorts": [8501, 8502, 8503]
 }

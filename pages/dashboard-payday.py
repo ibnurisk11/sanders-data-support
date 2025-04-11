@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Membaca data
-df_personal_loan = pd.read_csv("daily-report-payday-20250410.csv")
+df_personal_loan = pd.read_csv("data/daily-report-payday-20250410.csv")
 
 # Konversi kolom "Tgl Disbursed" ke format datetime
 df_personal_loan["Tgl Disbursed"] = pd.to_datetime(df_personal_loan["Tgl Disbursed"], format="%d/%m/%Y", errors='coerce')
