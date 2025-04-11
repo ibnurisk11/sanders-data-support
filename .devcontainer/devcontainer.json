@@ -5,9 +5,7 @@
     "codespaces": {
       "openFiles": [
         "README.md",
-        "main.py",
-        "dashboard.py",
-        "dashboard-payday.py"
+        "main.py"
       ]
     },
     "vscode": {
@@ -20,21 +18,13 @@
   },
   "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y <packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
   "postAttachCommand": {
-    "server": "streamlit run dashboard.py --server.enableCORS false --server.enableXsrfProtection false && streamlit run dashboard-payday.py --server.enableCORS false --server.enableXsrfProtection false"
+    "server": "streamlit run main.py --server.enableCORS false --server.enableXsrfProtection false"
   },
   "portsAttributes": {
     "8501": {
-      "label": "Application Dashboard",
-      "onAutoForward": "openPreview"
-    },
-    "8502": {
-      "label": "Application Loan Dashboard",
-      "onAutoForward": "openPreview"
-    },
-    "8503": {
-      "label": "Application Payday Dashboard",
+      "label": "Application Main Dashboard",
       "onAutoForward": "openPreview"
     }
   },
-  "forwardPorts": [8501, 8502, 8503]
+  "forwardPorts": [8501]
 }
