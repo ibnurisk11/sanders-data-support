@@ -16,6 +16,17 @@ allowed_companies = [
 ]
 df_personal_loan = df_personal_loan[df_personal_loan["Borrower Name Company"].isin(allowed_companies)]
 
+# Filter hanya marketing yang masih ada
+allowed_marketers = [
+    "Darsono", "Aditya Haryono", "Milda Noviyana", "Rizki Sitti Rachmawati", "Mentari Kusmana Dewi", "Risma Julianti",
+    "Ajeng Nurul Siti Fatimah", "Fahira Rahmi Nur Awaliah",
+]
+# Filter hanya marketing yang masih ada atau nilai kosong
+df_personal_loan = df_personal_loan[
+    (df_personal_loan["Nama Marketing"].isin(allowed_marketers)) |
+    (df_personal_loan["Nama Marketing"].isna())  # Menambahkan data yang kosong
+]
+
 # Navigasi
 page = st.sidebar.radio("Navigasi", ["Data Terfilter", "Grafik Loan Status", "Grafik Capaian Marketing"])
 
