@@ -8,6 +8,9 @@ df_personal_loan = pd.read_csv("data/daily-report-personal-20250410.csv")
 # Konversi kolom "Tgl Disbursed" ke format datetime
 df_personal_loan["Tgl Disbursed"] = pd.to_datetime(df_personal_loan["Tgl Disbursed"], format="%d/%m/%Y", errors='coerce')
 
+# **Filter awal untuk hanya menampilkan data dengan Tgl Disbursed >= '2024-01-01'**
+df_personal_loan = df_personal_loan[df_personal_loan["Tgl Disbursed"] >= "2024-01-01"]
+
 # Filter hanya perusahaan yang diizinkan
 allowed_companies = [
     "PT. Kaldu Sari Nabati", "PT. Pinus Merah Abadi", "PT. Richeese Kuliner Indonesia",
