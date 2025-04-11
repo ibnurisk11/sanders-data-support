@@ -1,12 +1,12 @@
 {
   "name": "Python 3",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bullseye",
   "customizations": {
     "codespaces": {
       "openFiles": [
         "README.md",
-        "dashboard.py"
+        "dashboard.py",
+        "dashboard-payday.py"
       ]
     },
     "vscode": {
@@ -19,15 +19,17 @@
   },
   "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y <packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; pip3 install --user streamlit; echo '✅ Packages installed and Requirements met'",
   "postAttachCommand": {
-    "server": "streamlit run dashboard.py --server.enableCORS false --server.enableXsrfProtection false"
+    "server": "streamlit run dashboard.py --server.enableCORS false --server.enableXsrfProtection false & streamlit run dashboard-payday.py --server.enableCORS false --server.enableXsrfProtection false"
   },
   "portsAttributes": {
     "8501": {
-      "label": "Application",
+      "label": "Application Dashboard",
+      "onAutoForward": "openPreview"
+    },
+    "8502": {
+      "label": "Application Payday Dashboard",
       "onAutoForward": "openPreview"
     }
   },
-  "forwardPorts": [
-    8501
-  ]
+  "forwardPorts": [8501, 8502]
 }
