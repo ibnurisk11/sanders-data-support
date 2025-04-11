@@ -1,6 +1,8 @@
-streamlit
-pandas
+streamlit==1.25.0
+pandas==1.5.3
 matplotlib
-plotly
+plotly==5.14.1
 mysqlclient == 2.2.7
 SQLAlchemy
+mysql-connector-python==8.0.33
+pip==25.1.0
