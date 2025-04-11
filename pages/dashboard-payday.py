@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 # Membaca data
 df_payday_loan = pd.read_csv("data/daily-report-payday-20250410.csv")
@@ -53,14 +54,26 @@ max_date = df_payday_loan["Tgl Disbursed"].max().date()
 selected_dates = st.sidebar.date_input("Pilih Rentang Tanggal Disbursed", [min_date, max_date])
 selected_dates = [pd.to_datetime(selected_dates[0]), pd.to_datetime(selected_dates[1])]
 
-# **Filter data berdasarkan pilihan pengguna**
-filtered_df = df_payday_loan[
-    ((df_payday_loan["Borrower Name Company"] == selected_company) | (selected_company == "Semua Perusahaan")) &
-    ((df_payday_loan["Nama Marketing"] == selected_marketing) | (selected_marketing == "Semua Marketing")) &
-    ((df_payday_loan["Loan Status"] == selected_status) | (selected_status == "Semua Status")) &
-    (df_payday_loan["Tgl Disbursed"] >= selected_dates[0]) &
-    (df_payday_loan["Tgl Disbursed"] <= selected_dates[1])
-]
+# Dropdown untuk Tenor
+loan_tenor = ["Semua Tenor"] + list(df_payday_loan["Tenor"].dropna().unique())
+selected_tenor = st.sidebar.selectbox("Pilih Tenor", loan_tenor)
+
+# Tambahkan decorator @st.cache_data untuk caching
+@st.cache_data
+def filter_data(df, selected_company, selected_marketing, selected_status, selected_tenor, selected_dates):
+    return df[
+        ((df["Borrower Name Company"] == selected_company) | (selected_company == "Semua Perusahaan")) &
+        ((df["Nama Marketing"] == selected_marketing) | (selected_marketing == "Semua Marketing")) &
+        ((df["Loan Status"] == selected_status) | (selected_status == "Semua Status")) &
+        ((df["Tenor"] == selected_tenor) | (selected_tenor == "Semua Tenor")) &
+        (df["Tgl Disbursed"] >= selected_dates[0]) &
+        (df["Tgl Disbursed"] <= selected_dates[1])
+    ]
+
+# Panggil fungsi filter_data
+filtered_df = filter_data(
+    df_payday_loan, selected_company, selected_marketing, selected_status, selected_tenor, selected_dates
+)
 
 # **Kolom yang ditampilkan**
 selected_columns = [
@@ -86,23 +99,30 @@ if page == "Data Terfilter":
 
 # **Grafik Loan Status**
 elif page == "Grafik Loan Status":
+    # Ganti bar chart Matplotlib dengan Plotly
     st.header("📈 Distribusi Loan Status per Perusahaan")
     loan_company_counts = filtered_df.groupby(["Borrower Name Company", "Loan Status"])["Id Borrower Loan"].count().unstack()
-    fig, ax = plt.subplots(figsize=(10, 5))
-    loan_company_counts.plot(kind="bar", stacked=True, ax=ax)
-    ax.set_ylabel("Jumlah Id Borrower Loan")
-    ax.set_xlabel("Nama Perusahaan")
-    ax.set_title("Jumlah Loan Status per Perusahaan")
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
+    fig = px.bar(
+        loan_company_counts.reset_index(),
+        x="Borrower Name Company",
+        y=loan_company_counts.columns,
+        title="Jumlah Loan Status per Perusahaan",
+        labels={"value": "Jumlah Id Borrower Loan", "Borrower Name Company": "Nama Perusahaan"},
+        barmode="stack"
+    )
+    st.plotly_chart(fig)
 
     st.header("📊 Persentase Loan Status per Marketing")
     loan_marketing_counts = filtered_df.groupby(["Nama Marketing", "Loan Status"])["Id Borrower Loan"].count().unstack()
-    fig, ax = plt.subplots(figsize=(8, 8))
-    loan_marketing_counts.sum(axis=1).plot(kind="pie", autopct='%1.1f%%', ax=ax)
-    ax.set_title("Persentase Loan Status per Marketing")
-    ax.set_ylabel("")
-    st.pyplot(fig)
+    loan_marketing_counts["Total"] = loan_marketing_counts.sum(axis=1)
+    fig = px.pie(
+        loan_marketing_counts.reset_index(),
+        values="Total",
+        names="Nama Marketing",
+        title="Persentase Loan Status per Marketing",
+        hole=0.4
+    )
+    st.plotly_chart(fig)
 
 # **Grafik Capaian Marketing**
 elif page == "Grafik Capaian Marketing":
